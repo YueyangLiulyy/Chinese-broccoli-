@@ -1,0 +1,4 @@
+logout
+login 
+atm
+logout
