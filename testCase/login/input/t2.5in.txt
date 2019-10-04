@@ -1,0 +1,4 @@
+deposit
+login
+atm 
+logout
