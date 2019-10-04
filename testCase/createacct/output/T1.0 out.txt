@@ -1,0 +1,2 @@
+NEW 1000666 000 0000000 TheCreatedAccount01
+EOS
