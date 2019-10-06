@@ -1,4 +1,3 @@
-login 
-atm
-logout
-deposit
+1000600
+1002000
+0000000
