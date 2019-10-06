@@ -1,4 +1,3 @@
-login
-agent
-withdraw
-logout
+1000600
+1002000
+0000000
