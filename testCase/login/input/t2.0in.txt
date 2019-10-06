@@ -1,4 +1,3 @@
-login
-agent
-deleteacct
-logout
+1000600
+1002000
+0000000
