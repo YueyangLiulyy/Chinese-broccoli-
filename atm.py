@@ -49,6 +49,13 @@ class ATM:
             else:
                 print("Check your input, and try again!")
         self.functionLogout()
+
+
+    # print greeting when login to ATM mode
+    # overriden in agent.py
+    def greeting(self):
+        print("Helo, welcome to the ATM mode, please type the transaction you want to make: ",end="")
+
     
     # deposit logic frame
     # get valid toAccount and amount, 
@@ -197,12 +204,14 @@ class ATM:
 
     # verify the amount is valid 
     # length is valid and only contain number
-    # todo: hadle when input is such as"01111"
     def verifyAmount(self, amount):
         if len(amount) < 3 or len(amount) > 8:
             print("Invalid amount, please try agian!")
             return False
         elif not amount.isdigit():
+            print("Invalid amount, please try again!")
+            return False
+        elif amount[0] == '0' and len(amount) > 3:                                      # such as "0111"
             print("Invalid amount, please try again!")
             return False
         else:
@@ -274,9 +283,5 @@ class ATM:
         print("No matching account found!")
         return False
 
-    # print greeting when login to ATM mode
-    # overriden in agent.py
-    def greeting(self):
-        print("Helo, welcome to the ATM mode, please type the transaction you want to make: ",end="")
-
+    
  
