@@ -250,14 +250,10 @@ class backEnd:
 
 
 def main():
-    # summaryDir= "D:/CISC327/project/backEnd/testCase/withdraw_decision_coverage/input/summary1.1.txt"
-    # masterFile= "D:/CISC327/project/backEnd/testCase/withdraw_decision_coverage/input/master1.1.txt"
     summaryDir = sys.argv[1]
     masterFile = sys.argv[2]
     back = backEnd(masterFile, summaryDir)
-    # print(back.masterList)
-    # print(back.validAccountsList)
-
+   
 
 if __name__ == "__main__":
     main()
