@@ -1,0 +1,12 @@
+login
+atm
+deposit
+1000329
+50000
+deposit
+1000330
+60000
+withdraw
+1000330
+10000
+logout

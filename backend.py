@@ -1,20 +1,21 @@
 import os
 import sys
 class backEnd:
-    def __init__(self, masterFile, transactionsFile):
-        self.transactionsList = self.readFile(transactionsFile)                 
+    def __init__(self, transactionsFile, masterFile):
+        self.transactionsList = self.readFile(transactionsFile)                
         self.masterList = self.readFile(masterFile)
+        self.dayDir = os.path.abspath(os.path.join(transactionsFile, "../.."))      # get grandparent direcotry of transaction file, which is day directory
         if self.masterList is False or self.transactionsList is False:
             print("program terminated!") 
         else:
             self.length = len(self.masterList)
-            if not self.combine():
+            if not self.combine():                                                  # combine transaction to master account fail
                 print("program terminated!") 
-            else:
+            else:                                                                   # successfully combined
                 self.validAccountsList = self.updateValidAccList()
                 self.masterList[-1] = self.masterList[-1].strip()
-                self.writeFile(masterFile, "accountList.txt", self.validAccountsList)
-                self.writeFile(masterFile, "masterAccount.txt", self.masterList)
+                self.writeFile("accountList.txt", self.validAccountsList)
+                self.writeFile("masterAccount.txt", self.masterList)
 
     # Read the targeted file
     def readFile(self, target):
@@ -29,13 +30,12 @@ class backEnd:
         except FileNotFoundError:
             print("Can not find the targeted file! ")
             return False
-        return True
             
 
-    # write file with given content, directory, and name
-    def writeFile(self, directory, name, content):
-        targetDir = os.path.dirname(__file__) + "/out/"
-        targetFile = targetDir + name
+    # write file with given content, and name
+    def writeFile(self, name, content):
+        targetDir = os.path.join(self.dayDir, "backend_out")
+        targetFile = os.path.join(targetDir, name)
         # new master account file
         if not os.path.exists(targetDir):
             os.makedirs(targetDir)
@@ -102,6 +102,7 @@ class backEnd:
                 end = middle - 1
             else:
                 start = middle + 1
+                # 4321
         return False, middle
 
 
@@ -109,17 +110,29 @@ class backEnd:
     # @newClient string of new client information 
     # @startIdx the closest index start to 
     def insertToList(self, newClient, startIdx):
-        newAccount = newClient[:7]                      # first 7 digits are account number                  
-        account = self.masterList[startIdx][:7]
-        if newAccount < account:
-            self.masterList.insert(startIdx+1, newClient)
-        else:
-            self.masterList.insert(startIdx, newClient)
+        newAccount = newClient[:7]                      # first 7 digits are account number 
+        if startIdx == -1:                              # when the master list is empty
+            self.masterList.append(newClient)
+        else:               
+            account = self.masterList[startIdx][:7]
+            if newAccount < account:
+                self.masterList.insert(startIdx+1, newClient)
+            else:
+                self.masterList.insert(startIdx, newClient)
                 
     # line of information in master account file should < 47 characters 
     def checkUpdateInfo(self, updateInfo):
         return len(updateInfo) <= 47
 
+    # handle the side effect of int(str) operation
+    # such as int("001") + int("001") = 2 instead of 002
+    def convert_to_cent(self, num):
+        amount_in_cent = str(num)
+        if (num < 10):
+            amount_in_cent = "00" + amount_in_cent
+        elif (num < 100):
+            amount_in_cent = "0" + amount_in_cent
+        return amount_in_cent
 
     # The process for deposit transcription
     def processDeposit(self, toAccount, amount, fromAccount):
@@ -129,7 +142,8 @@ class backEnd:
             name = increaseAccount[2].strip()
             oldAmount = increaseAccount[1]
             newAmount = int(oldAmount) + int(amount)
-            updateInfo = f"{toAccount} {newAmount} {name}"
+            amount_in_cent = self.convert_to_cent(newAmount)
+            updateInfo = f"{toAccount} {amount_in_cent} {name}\n"
             if self.checkUpdateInfo(updateInfo):
                 self.masterList[idx] = updateInfo
             else:
@@ -151,12 +165,13 @@ class backEnd:
             name = decreaseAccount[2].strip()
             oldAmount = decreaseAccount[1]
             newAmount = int(oldAmount) - int(amount)
+            amount_in_cent = self.convert_to_cent(newAmount)
             if newAmount < 0 :
                 print(f"Transaction: WDR {toAccount} {amount} {fromAccount} *** is invalid!")
                 print("Due to: insufficient balance!")
                 return False
             else:
-                updateInfo = f"{fromAccount} {newAmount} {name}\n"
+                updateInfo = f"{fromAccount} {amount_in_cent} {name}\n"
                 if self.checkUpdateInfo(updateInfo):
                     self.masterList[idx] = updateInfo
                 else:
@@ -181,6 +196,8 @@ class backEnd:
             oldAmount2 = increaseAccount[1]
             newAmount = int(oldAmount) - int(amount)
             newAmount2 = int(oldAmount2) + int(amount)
+            amount_in_cent = self.convert_to_cent(newAmount)
+            amount_in_cent2 = self.convert_to_cent(newAmount2)
             name = decreaseAccount[2].strip()
             name2 = increaseAccount[2].strip()
             if newAmount < 0 :
@@ -188,8 +205,8 @@ class backEnd:
                 print("Due to: insufficient balance!")
                 return False
             else:
-                updateInfo = f"{fromAccount} {newAmount} {name}\n"
-                updateInfo2 = f"{toAccount} {newAmount2} {name2}\n"
+                updateInfo = f"{fromAccount} {amount_in_cent} {name}\n"
+                updateInfo2 = f"{toAccount} {amount_in_cent2} {name2}\n"
                 if self.checkUpdateInfo(updateInfo) and self.checkUpdateInfo(updateInfo2):
                     self.masterList[idx] = updateInfo
                     self.masterList[idx2] = updateInfo2
@@ -250,10 +267,13 @@ class backEnd:
 
 
 def main():
+    # summaryDir= "D:/CISC327/project/backEnd/testCase/withdraw_decision_coverage/input/summary1.1.txt"
+    # masterFile= "D:/CISC327/project/backEnd/testCase/withdraw_decision_coverage/input/master1.1.txt"
     summaryDir = sys.argv[1]
     masterFile = sys.argv[2]
-    back = backEnd(masterFile, summaryDir)
-   
+    back = backEnd(summaryDir, masterFile)
+    
+
 
 if __name__ == "__main__":
     main()

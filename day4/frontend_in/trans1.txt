@@ -1,0 +1,13 @@
+login
+agent
+transfer
+1000330
+1000331
+550000
+deposit
+1000326
+99999999
+createacct
+1000338
+newAcc038
+logout

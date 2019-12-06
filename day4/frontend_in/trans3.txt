@@ -1,0 +1,10 @@
+login
+agent
+withdraw
+1000329
+10000
+transfer
+1000326
+1000327
+5000000
+logout

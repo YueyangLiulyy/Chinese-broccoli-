@@ -1,0 +1,10 @@
+login
+atm
+deposit
+1000328
+100000
+transfer
+1000328
+1000327
+50000
+logout

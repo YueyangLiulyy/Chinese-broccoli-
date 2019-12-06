@@ -1,0 +1,6 @@
+login
+agent
+deposit
+1000330
+600000
+logout

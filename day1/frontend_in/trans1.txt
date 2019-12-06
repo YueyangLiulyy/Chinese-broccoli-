@@ -1,0 +1,9 @@
+login
+agent
+createacct
+1000327
+newAcc01
+createacct
+1000330
+newAcc04
+logout
